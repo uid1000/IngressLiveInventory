@@ -2,7 +2,7 @@
 // @id keyInventory
 // @name IITC Plugin: Key Inventory
 // @category Info
-// @version 0.0.1
+// @version 0.0.2
 // @namespace	https://github.com/uid1000/IngressLiveInventory
 // @downloadURL	https://github.com/uid1000/IngressLiveInventory/raw/main/liveInventory.user.js
 // @updateURL	https://github.com/uid1000/IngressLiveInventory/raw/main/liveInventory.user.js
