@@ -305,7 +305,7 @@ function wrapper(plugin_info) {
 <td><a href="//intel.ingress.com/?pll=${el._latlng.lat},${el._latlng.lng}" onclick="zoomToAndShowPortal('${el.portalCoupler.portalGuid}',[${el._latlng.lat},${el._latlng.lng}]); return false;">${el.portalCoupler.portalTitle}</a></td>
 <td>${el.count}</td>
 <td>${el._formattedDistance}</td>
-<td>${el.capsules.map(e => capsuleNames[e] || e).join(', ')}</td>
+<td style="white-space: nowrap;">${el.capsules.map(e => capsuleNames[e] || e).join('<br>')}</td>
 </tr>`;
 		}).join('');
 	}
@@ -407,7 +407,6 @@ ${getKeyTableBody('name', 1)}
 <select id="live-inventory-settings--mode">
 <option value="icon" ${settings.displayMode === 'icon' ? 'selected' : ''}>Key icon</option>
 <option value="count" ${settings.displayMode === 'count' ? 'selected' : ''}>Number of keys</option>
-<option value="marker" ${settings.displayMode === 'marker' ? 'selected' : ''}>Marker pin</option>
 </select>
 Display mode
 </label>
