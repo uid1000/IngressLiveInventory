@@ -1,37 +1,39 @@
 // ==UserScript==
-// @id liveInventory
-// @name IITC Plugin: Live Inventory
+// @id keyInventory
+// @name IITC Plugin: Key Inventory
 // @category Info
-// @version 0.0.12
-// @namespace	https://github.com/EisFrei/IngressLiveInventory
-// @downloadURL	https://github.com/EisFrei/IngressLiveInventory/raw/main/liveInventory.user.js
-// @updateURL	https://github.com/EisFrei/IngressLiveInventory/raw/main/liveInventory.user.js
-// @homepageURL	https://github.com/EisFrei/IngressLiveInventory
-// @description Show current ingame inventory
-// @author EisFrei
+// @version 0.0.1
+// @namespace	https://github.com/uid1000/IngressLiveInventory
+// @downloadURL	https://github.com/uid1000/IngressLiveInventory/raw/main/liveInventory.user.js
+// @updateURL	https://github.com/uid1000/IngressLiveInventory/raw/main/liveInventory.user.js
+// @homepageURL	https://github.com/uid1000/IngressLiveInventory
+// @description Show current ingame key inventory
+// @author uid1000
 // @include		https://intel.ingress.com/*
 // @match		https://intel.ingress.com/*
 // @grant			none
 // ==/UserScript==
 
+// Forked from https://github.com/EisFrei/IngressLiveInventory
+
 function wrapper(plugin_info) {
 
 	// Make sure that window.plugin exists. IITC defines it as a no-op function,
 	// and other plugins assume the same.
-	if (typeof window.plugin !== "function") window.plugin = function () {};
+	if (typeof window.plugin !== "function") window.plugin = function () { };
 	const KEY_SETTINGS = "plugin-live-inventory";
 	let settings = {
 		displayMode: 'icon',
 	};
 
-	window.plugin.LiveInventory = function () {};
+	window.plugin.LiveInventory = function () { };
 
 	const thisPlugin = window.plugin.LiveInventory;
 	// Name of the IITC build for first-party plugins
 	plugin_info.buildName = "LiveInventory";
 
 	// Datetime-derived version of the plugin
-	plugin_info.dateTimeVersion = "202102100950";
+	plugin_info.dateTimeVersion = "202103070000";
 
 	// ID/name of the plugin
 	plugin_info.pluginId = "liveInventory";
@@ -159,12 +161,49 @@ function wrapper(plugin_info) {
 	}
 
 	function createIcons() {
-		thisPlugin.keyIcon = svgToIcon(`<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-key" width="44" height="44" viewBox="0 0 24 24" stroke-width="2" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+		if (settings.displayMode === 'marker') {
+			thisPlugin.keyIcon = L.icon({
+				iconUrl: 'data:image/png;base64,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',
+				iconAnchor: [15, 40],
+				iconSize: [30, 40]
+			});
+		} else {
+			thisPlugin.keyIcon = svgToIcon(`<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-key" width="44" height="44" viewBox="0 0 24 24" stroke-width="2" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
 <circle cx="8" cy="15" r="4" />
 <line x1="10.85" y1="12.15" x2="19" y2="4" />
 <line x1="18" y1="5" x2="20" y2="7" />
 <line x1="15" y1="8" x2="17" y2="10" />
 </svg>`, 15);
+		}
+	}
+
+	function addKeyMarker(guid, latlng, lbl) {
+		/*
+				const keyIcon = ("data:image/svg+xml," + encodeURIComponent(`<svg width="60" height="60" viewBox="0 0 316 540" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+		<g id="BASE">
+		</g>
+		<path d="M0,323L158,415L316,323L158,540L0,323Z" style="fill:rgb(120,179,44);"/>
+		<path d="M160,0L1,92L1,275L159,367L316,275L316,91L160,0Z" style="fill:rgb(201,35,39);"/>
+		<path d="M40.242,115.042L158.827,45.659L277.834,113.031L277.547,251.632L159.352,321.048L40.874,251.337L40.242,115.042Z" style="fill:rgb(120,179,44);"/>
+		<g transform="matrix(0.263672,0,0,0.263672,92,115)">
+		<path d="M512,176.001C512,273.203 433.202,352 336,352C324.78,352 313.81,350.938 303.173,348.931L279.161,375.945C274.609,381.066 268.075,384 261.223,384L224,384L224,424C224,437.255 213.255,448 200,448L160,448L160,488C160,501.255 149.255,512 136,512L24,512C10.745,512 0,501.255 0,488L0,409.941C0,403.576 2.529,397.471 7.029,392.97L168.831,231.168C163.108,213.814 160,195.271 160,176C160,78.798 238.797,0.001 335.999,0C433.488,-0.001 512,78.511 512,176.001ZM336,128C336,154.51 357.49,176 384,176C410.51,176 432,154.51 432,128C432,101.49 410.51,80 384,80C357.49,80 336,101.49 336,128Z" style="fill:white;fill-rule:nonzero;"/>
+		</g>
+		</svg>`));
+		*/
+		/*
+					iconUrl: keyIcon,
+					iconAnchor: [15, 40],
+					iconSize: [30, 40]
+		*/
+		var key = L.marker(latlng, {
+			title: lbl
+		});
+
+		window.registerMarkerForOMS(key);
+		key.on('spiderfiedclick', function () { renderPortalDetails(guid); });
+
+		window.plugin.bookmarks.starLayers[guid] = key;
+		key.addTo(window.plugin.bookmarks.starLayerGroup);
 	}
 
 	function prepareItemCounts(data) {
@@ -319,10 +358,19 @@ function wrapper(plugin_info) {
 		navigator.clipboard.writeText(str);
 	}
 
+	function addKeyMarkers() {
+		thisPlugin.keyCount.forEach(function (el, key) {
+			console.log("Add marker: " + el.portalCoupler.portalTitle);
+			addKeyMarker(el.portalCoupler.portalGuid, el._latlng, el.portalCoupler.portalTitle);
+		})
+	}
+
 	function displayInventory() {
 		dialog({
 			html: `<div id="live-inventory">
 <div id="live-inventory-tables">
+
+<!--
 <table id="live-inventory-item-table">
 <thead>
 <tr>
@@ -336,6 +384,7 @@ ${getItemTableBody('type', 1)}
 </tbody>
 </table>
 <hr/>
+-->
 
 <table id="live-inventory-key-table">
 <thead>
@@ -356,8 +405,9 @@ ${getKeyTableBody('name', 1)}
 <h2>Settings</h2>
 <label>
 <select id="live-inventory-settings--mode">
-<option value="icon" ${settings.displayMode === 'icon'?'selected':''}>Key icon</option>
-<option value="count" ${settings.displayMode === 'count'?'selected':''}>Number of keys</option>
+<option value="icon" ${settings.displayMode === 'icon' ? 'selected' : ''}>Key icon</option>
+<option value="count" ${settings.displayMode === 'count' ? 'selected' : ''}>Number of keys</option>
+<option value="marker" ${settings.displayMode === 'marker' ? 'selected' : ''}>Marker pin</option>
 </select>
 Display mode
 </label>
@@ -365,7 +415,7 @@ Display mode
 <textarea id="live-inventory-settings--capsule-names" placeholder="CAPSULEID:Display name">${settings.capsuleNames || ''}</textarea>
 </div>
 </div>`,
-			title: 'Live Inventory',
+			title: 'Key Inventory',
 			id: 'live-inventory',
 			width: 'auto',
 			closeCallback: function () {
@@ -378,6 +428,7 @@ Display mode
 		}).dialog('option', 'buttons', {
 			'Copy Items': exportItems,
 			'Copy Keys': exportKeys,
+			'Add Markers': addKeyMarkers,
 			'OK': function () {
 				$(this).dialog('close');
 			},
@@ -447,7 +498,7 @@ Display mode
 				prepareData(localData.data);
 				return;
 			}
-		} catch (e) {}
+		} catch (e) { }
 
 		checkSubscription((err, data) => {
 			if (data && data.result === true) {
@@ -473,7 +524,7 @@ Display mode
 			const localData = JSON.parse(localStorage[KEY_SETTINGS]);
 			ls.data = localData.data;
 			ls.expires = localData.expires;
-		} catch (e) {}
+		} catch (e) { }
 		ls.settings = settings;
 		localStorage[KEY_SETTINGS] = JSON.stringify(ls);
 	}
@@ -542,7 +593,7 @@ Display mode
 	function setup() {
 		loadInventory();
 		$('<a href="#">')
-			.text('Inventory')
+			.text('Keys')
 			.click(displayInventory)
 			.appendTo($('#toolbox'));
 
